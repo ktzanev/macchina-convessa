@@ -15,10 +15,11 @@
           <circle  v-bind:cx="n-11" v-bind:cy="m-11" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==11 && m==11)}" />
         </g>
       </g>
+      <!-- edges -->
       <line v-for="(i,l) in aLines" v-bind="l" @mousedown="addPoint($event,i,true)" class="edge" v-bind:stroke-width="edgeWidth"/>
-      <circle v-for="p in aPolygon" v-bind="p" @mousedown="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
-      <!-- duals -->
       <line v-for="(i,l) in dLines" v-bind="l" @mousedown="addPoint($event,i,false)" class="dualEdge" v-bind:stroke-width="edgeWidth"/>
+      <!-- vertices -->
+      <circle v-for="p in aPolygon" v-bind="p" @mousedown="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
       <circle v-for="p in dPolygon" v-bind="p" @mousedown="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
     </svg>
     <div class="settings">
