@@ -1,0 +1,63 @@
+body {
+  margin: 0px;
+}
+.graph {
+  background-color: #222;
+  width: 49vw;
+  height: 49vw;
+}
+.pointer {
+  fill: #42b983;
+  cursor: pointer;
+}
+.pointer.selected {
+  fill: yellow;
+  cursor: pointer;
+}
+.edge {
+  stroke:rgb(255,0,0);
+}
+.dualPointer {
+  fill: #83b942;
+}
+.dualEdge {
+  stroke:rgb(0,0,255);
+}
+.intpoint.origin {
+  fill : rgb(128,0,0);
+}
+.intpoint {
+  fill : gray;
+}
+.settings {
+  display: inline-block;
+  width: 49vw;
+  height: 49vw;
+}
+.volumeA, .volumeD {
+  display: inline-block;
+  padding: .35em;
+  margin: .35em;
+  border-radius: .35em;
+}
+.volumeA {
+  background-color: #FAA;
+}
+.volumeD {
+  background-color: #AAF;
+}
+.roundA, .roundD {
+  display: inline-block;
+  padding: .35em;
+  margin: .35em;
+  border-radius: .35em;
+}
+
+.roundA {
+  background-color: #FAA;
+}
+.roundD {
+  background-color: #AAF;
+}
+
+

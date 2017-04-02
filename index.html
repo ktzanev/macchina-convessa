@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dual SVG Point</title>
+
+  <link rel="stylesheet" href="main.css">
+
+</head>
+<body>
+  <div id="app">
+    <svg class="graph" v-bind="graphPos">
+      <g v-for="n in 21">
+        <g v-for="m in 21">
+          <circle  v-bind:cx="n-11" v-bind:cy="m-11" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==11 && m==11)}" />
+        </g>
+      </g>
+      <line v-for="(i,l) in aLines" v-bind="l" @mousedown="addPoint($event,i,true)" class="edge" v-bind:stroke-width="edgeWidth"/>
+      <circle v-for="p in aPolygon" v-bind="p" @mousedown="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
+      <!-- duals -->
+      <line v-for="(i,l) in dLines" v-bind="l" @mousedown="addPoint($event,i,false)" class="dualEdge" v-bind:stroke-width="edgeWidth"/>
+      <circle v-for="p in dPolygon" v-bind="p" @mousedown="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
+    </svg>
+    <div class="settings">
+      <span class="volumeA">Volume A : {{volumeAPolygon.toFixed(3)}}</span><br>
+      <span class="volumeD">Volume D : {{volumeDPolygon.toFixed(3)}}</span><br>
+
+      Precision : <input type="range" min="0.01" max="1" step="0.01" v-model="precision">
+      <button @click="roundPolygon(aPolygon)" class="roundA">Round A up to {{precision}}</button>
+      <button @click="roundPolygon(dPolygon)" class="roundD">Round D up to {{precision}}</button><br>
+      Vertex size : <input type="range" min="0" max="0.5" step="0.01" v-model="vertexSize"><br>
+      Edge width : <input type="range" min="0" max="0.5" step="0.01" v-model="edgeWidth"><br>
+      Integer points size : <input type="range" min="0" max="0.5" step="0.01" v-model="integerPointSize"><br><br>
+      Help :
+      <ul>
+        <li><kbd>Shift+Click</kbd> on edge => add point;</li>
+        <li><kbd>Ctrl/Cmd+Click</kbd> on vertex => select it.</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.28/vue.min.js" /></script>
+  <script src="main.js"></script>
+</body>
+</html>
