@@ -115,12 +115,15 @@ var vm = new Vue({
 
       return edges;
     }, // end aLines()
-    roundPolygon : function (poly){
-      var n = poly.length; // number of points
+    roundPolygon : function (useA){
+      var xPolygon = useA ? this.aPolygon : this.dPolygon;
+      var n = xPolygon.length; // number of points
+
+      this.aIsMaster = useA;
 
       for (var i = 0; i < n; i++) {
-        poly[i].cx = Math.round(poly[i].cx/this.precision)*this.precision;
-        poly[i].cy = Math.round(poly[i].cy/this.precision)*this.precision;
+        xPolygon[i].cx = Math.round(xPolygon[i].cx/this.precision)*this.precision;
+        xPolygon[i].cy = Math.round(xPolygon[i].cy/this.precision)*this.precision;
       }
     }, // end roundedPolygon
     volumePolygon : function (poly){
@@ -143,6 +146,8 @@ var vm = new Vue({
       var point = svg.createSVGPoint();
       var transform = svg.getScreenCTM().inverse();
       var xPolygon = useA ? this.aPolygon : this.dPolygon;
+
+      this.aIsMaster = useA;
 
       getPos(evt, point);
       var newPt = point.matrixTransform(transform);

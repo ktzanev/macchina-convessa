@@ -27,8 +27,8 @@
       <span class="volumeD">Volume D : {{volumeDPolygon.toFixed(3)}}</span><br>
 
       Precision : <input type="range" min="0.01" max="1" step="0.01" v-model="precision">
-      <button @click="roundPolygon(aPolygon)" class="roundA">Round A up to {{precision}}</button>
-      <button @click="roundPolygon(dPolygon)" class="roundD">Round D up to {{precision}}</button><br>
+      <button @click="roundPolygon(true)" class="roundA">Round A up to {{precision}}</button>
+      <button @click="roundPolygon(false)" class="roundD">Round D up to {{precision}}</button><br>
       Vertex size : <input type="range" min="0" max="0.5" step="0.01" v-model="vertexSize"><br>
       Edge width : <input type="range" min="0" max="0.5" step="0.01" v-model="edgeWidth"><br>
       Integer points size : <input type="range" min="0" max="0.5" step="0.01" v-model="integerPointSize"><br><br>
