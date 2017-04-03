@@ -22,7 +22,7 @@
       <circle v-for="p in aPolygon" v-bind="p" @mousedown="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
       <circle v-for="p in dPolygon" v-bind="p" @mousedown="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
     </svg>
-    <div class="settings">
+    <div class="settings" v-cloak>
       <span class="volumeA">Volume A : {{volumeAPolygon.toFixed(3)}}</span><br>
       <span class="volumeD">Volume D : {{volumeDPolygon.toFixed(3)}}</span><br>
 

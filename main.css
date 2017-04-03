@@ -72,3 +72,6 @@ body {
 .github-logo a:hover svg path {
   fill: #933EC5;
 }
+[v-cloak] {
+  opacity: .21;
+}
