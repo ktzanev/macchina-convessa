@@ -59,5 +59,13 @@ body {
 .roundD {
   background-color: #AAF;
 }
-
-
+.github-logo {
+  text-align: right;
+  padding: 1em;
+}
+.github-logo svg {
+  width: 2em;
+}
+.github-logo a:hover svg path {
+  fill: #933EC5;
+}
