@@ -23,6 +23,9 @@ body {
 .dualEdge {
   stroke:rgb(0,0,255);
 }
+.edge:hover, .dualEdge:hover {
+  cursor: copy;
+}
 .intpoint.origin {
   fill : rgb(128,0,0);
 }
