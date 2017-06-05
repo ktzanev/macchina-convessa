@@ -52,6 +52,9 @@ var vm = new Vue({
     dLines: function () {
       return this.edgesOfPolygon(this.dPolygon);
     }, // end dLines
+    dTriangles: function () {
+      return this.trianglesOfPolygon(this.dPolygon);
+    }, // end dTriangles
     graphPos: function graphPos() {
       var size = this.graphSize;
       var half = size / 2;
@@ -67,6 +70,7 @@ var vm = new Vue({
       },
       // setter
       set: function (str) {
+        this.aIsMaster = true;
         this.aPolygon = str.trim().replace(/^[( ]+|[ )]+$/g,"").split(/[^-0-9.,]+/).map(function(v){w = v.trim().split(/[^-0-9.]+/); return {cx:parseFloat(w[0]),cy:parseFloat(w[1]),selected:false};});
       }
     }
@@ -115,6 +119,16 @@ var vm = new Vue({
 
       return edges;
     }, // end edgesOfPolygon
+    trianglesOfPolygon : function (poly){
+      var n = poly.length; // number of points
+      var edges = new Array(); // will contain all the triangle like "0,0 x1,y1 x2,y2"
+
+      for (var i = 0, j = 1; i < n; j = (++i+1) % n) {
+        edges.push("0,0 " + poly[i].cx+","+poly[i].cy + " " + poly[j].cx+","+poly[j].cy);
+      }
+
+      return edges;
+    }, // end trianglesOfPolygon
     roundPolygon : function (useA){
       var xPolygon = useA ? this.aPolygon : this.dPolygon;
       var n = xPolygon.length; // number of points

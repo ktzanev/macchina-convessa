@@ -23,6 +23,9 @@ body {
 .dualEdge {
   stroke:rgb(0,0,255);
 }
+.dualTriangles {
+  fill: rgba(0,0,255,.21);
+}
 .edge:hover, .dualEdge:hover {
   cursor: copy;
 }
