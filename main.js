@@ -8,7 +8,13 @@ var vm = new Vue({
     vertexSize : .05,
     edgeWidth : .035,
     integerPointSize : .049,
-    precision : .5
+    precision : 4,
+    examples : [
+      { title: "Convex Asymetric Min", data: "(0,1)(1,0)(-1,-1)" },
+      { title: "Convex Symetric Min = B¹", data: "(1,0)(0,1)(-1,0)(0,-1)" },
+      { title: "Star Symetric Min 1", data: "(0.5,0)(0.5,0.5)(0,0.5)(-1,1)(-0.5,0)(-0.5,-0.5)(0,-0.5)(1,-1)" },
+      { title: "Star Symetric Min 2", data: "(0.5,0)(1,0.5)(0,0.5)(-0.5,1)(-0.5,0)(-1,-0.5)(0,-0.5)(0.5,-1)" }
+    ]
   },// end data
   // ------------------
   watch: {
@@ -54,25 +60,19 @@ var vm = new Vue({
         width: size
       };
     },
+    aPolygonString: {
+      // getter
+      get: function () {
+        return this.aPolygon.map(function(v){return "("+v.cx+","+v.cy+")";}).join('');
+      },
+      // setter
+      set: function (str) {
+        this.aPolygon = str.trim().replace(/^[( ]+|[ )]+$/g,"").split(/[^-0-9.,]+/).map(function(v){w = v.trim().split(/[^-0-9.]+/); return {cx:parseFloat(w[0]),cy:parseFloat(w[1]),selected:false};});
+      }
+    }
   }, // end computed
   created: function () {
-    this.aPolygon = [
-      {
-        cx: 1,
-        cy: 0,
-        selected : false
-      },
-      {
-        cx: 0,
-        cy: 1,
-        selected : false
-      },
-      {
-        cx: -1,
-        cy: -1,
-        selected : false
-      }
-    ];
+    this.aPolygonString = "(0,1)(1,0)(-1,-1)(-2,-1)";
   }, // end created
   // ------------------
   methods: {
@@ -114,7 +114,7 @@ var vm = new Vue({
       }
 
       return edges;
-    }, // end aLines()
+    }, // end edgesOfPolygon
     roundPolygon : function (useA){
       var xPolygon = useA ? this.aPolygon : this.dPolygon;
       var n = xPolygon.length; // number of points
@@ -122,8 +122,8 @@ var vm = new Vue({
       this.aIsMaster = useA;
 
       for (var i = 0; i < n; i++) {
-        xPolygon[i].cx = Math.round(xPolygon[i].cx/this.precision)*this.precision;
-        xPolygon[i].cy = Math.round(xPolygon[i].cy/this.precision)*this.precision;
+        xPolygon[i].cx = Math.round(xPolygon[i].cx*this.precision)/this.precision;
+        xPolygon[i].cy = Math.round(xPolygon[i].cy*this.precision)/this.precision;
       }
     }, // end roundedPolygon
     volumePolygon : function (poly){
@@ -212,8 +212,7 @@ var vm = new Vue({
 
       svg.addEventListener(events.move, moveFn);
       svg.addEventListener(events.stop, stopFn);
-    } // end startMove
-    // ------------------
+    }, // end startMove
   } // end methods
 });
 

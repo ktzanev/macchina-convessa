@@ -37,6 +37,12 @@ body {
   width: 49vw;
   height: 49vw;
 }
+.settings .field {
+  display: block;
+}
+.settings .string {
+  width:100%;
+}
 .volumeA, .volumeD {
   display: inline-block;
   padding: .35em;
