@@ -66,17 +66,32 @@ var vm = new Vue({
     aPolygonString: {
       // getter
       get: function () {
-        return this.aPolygon.map(function(v){return "("+v.cx+","+v.cy+")";}).join('');
+        var str = this.aPolygon.map(function(v){return "("+v.cx+","+v.cy+")";}).join('');
+        try {
+          localStorage.setItem("polygone", str);
+        } catch(e) {
+          console.log('Can\'t save to Local Storage :(');
+        }
+        return str;
       },
       // setter
       set: function (str) {
         this.aIsMaster = true;
         this.aPolygon = str.trim().replace(/^[( ]+|[ )]+$/g,"").split(/[^-0-9.,]+/).map(function(v){w = v.trim().split(/[^-0-9.]+/); return {cx:parseFloat(w[0]),cy:parseFloat(w[1]),selected:false};});
+        try {
+          localStorage.setItem("polygone", str);
+        } catch(e) {
+          console.log('Can\'t save to Local Storage :(');
+        }
       }
     }
   }, // end computed
   created: function () {
-    this.aPolygonString = "(0,1)(1,0)(-1,-1)(-2,-1)";
+    try {
+      this.aPolygonString = localStorage.getItem("polygone", "(0,1)(1,0)(-1,-1)(-2,-1)");
+    } catch(e) {
+      this.aPolygonString = "(0,1)(1,0)(-1,-1)(-2,-1)";
+    }
   }, // end created
   // ------------------
   methods: {
