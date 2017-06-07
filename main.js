@@ -233,7 +233,7 @@ var vm = new Vue({
       };
       var stopFn = function stopFn(evt) {
         moving = false;
-        if( this.useCtrl ? event.ctrlKey : evt.metaKey )
+        if( vm.useCtrl ? event.ctrlKey : evt.metaKey )
         {
           vertex.selected = !wasSelected;
         } else {
