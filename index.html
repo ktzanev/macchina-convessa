@@ -17,11 +17,11 @@
       </g>
       <!-- edges -->
       <polygon v-for="(i,l) in dTriangles" v-bind:points="l" class="dualTriangles"/>
-      <line v-for="(i,l) in dLines" v-bind="l" @mousedown="addPoint($event,i,false)" class="dualEdge" v-bind:stroke-width="edgeWidth"/>
-      <line v-for="(i,l) in aLines" v-bind="l" @mousedown="addPoint($event,i,true)" class="edge" v-bind:stroke-width="edgeWidth"/>
+      <line v-for="(i,l) in dLines" v-bind="l" @mousedown.prevent="addPoint($event,i,false)" class="dualEdge" v-bind:stroke-width="edgeWidth"/>
+      <line v-for="(i,l) in aLines" v-bind="l" @mousedown.prevent="addPoint($event,i,true)" class="edge" v-bind:stroke-width="edgeWidth"/>
       <!-- vertices -->
-      <circle v-for="p in aPolygon" v-bind="p" @mousedown="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
-      <circle v-for="p in dPolygon" v-bind="p" @mousedown="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
+      <circle v-for="p in aPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
+      <circle v-for="p in dPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
     </svg>
     <div class="settings" v-cloak>
       <select v-model="aPolygonString" class="field">
@@ -43,7 +43,7 @@
       Help :
       <ul>
         <li><kbd>Shift+Click</kbd> on edge => add point;</li>
-        <li><kbd>Ctrl/Cmd+Click</kbd> on vertex => select it.</li>
+        <li><kbd>{{ useCtrl ? "Ctrl" : "Cmd"}}+Click</kbd> on vertex => select/deselect it.</li>
       </ul>
       <div class="github-logo">
         <a href="https://github.com/ktzanev/macchina-convessa">

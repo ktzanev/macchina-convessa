@@ -14,7 +14,8 @@ var vm = new Vue({
       { title: "Convex Symetric Min = B¹", data: "(1,0)(0,1)(-1,0)(0,-1)" },
       { title: "Star Symetric Min 1", data: "(0.5,0)(0.5,0.5)(0,0.5)(-1,1)(-0.5,0)(-0.5,-0.5)(0,-0.5)(1,-1)" },
       { title: "Star Symetric Min 2", data: "(0.5,0)(1,0.5)(0,0.5)(-0.5,1)(-0.5,0)(-1,-0.5)(0,-0.5)(0.5,-1)" }
-    ]
+    ],
+    useCtrl : navigator.userAgent.indexOf('Mac OS X') == -1
   },// end data
   // ------------------
   watch: {
@@ -202,6 +203,8 @@ var vm = new Vue({
       var point = svg.createSVGPoint();
       var transform = svg.getScreenCTM().inverse();
       var xPolygon = useA ? this.aPolygon : this.dPolygon;
+      var wasSelected = vertex.selected;
+      vertex.selected = true;
 
       this.aIsMaster = useA;
 
@@ -210,7 +213,6 @@ var vm = new Vue({
       getPos(evt, point);
       oldPt = point.matrixTransform(transform);
 
-      vertex.selected = true;
 
       var updateFn = function updateFn() {
         if (moving) requestAnimationFrame(updateFn);
@@ -231,7 +233,12 @@ var vm = new Vue({
       };
       var stopFn = function stopFn(evt) {
         moving = false;
-        vertex.selected=event.ctrlKey;
+        if( this.useCtrl ? event.ctrlKey : evt.metaKey )
+        {
+          vertex.selected = !wasSelected;
+        } else {
+          vertex.selected = wasSelected;
+        };
         svg.removeEventListener(events.move, moveFn);
         svg.removeEventListener(events.stop, stopFn);
       };

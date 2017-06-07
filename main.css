@@ -1,6 +1,9 @@
 body {
   margin: 0px;
 }
+
+/* SVG */
+
 .graph {
   background-color: #222;
   width: 49vw;
@@ -35,6 +38,9 @@ body {
 .intpoint {
   fill : gray;
 }
+
+/* Settings */
+
 .settings {
   display: inline-block;
   width: 49vw;
@@ -83,4 +89,13 @@ body {
 }
 [v-cloak] {
   opacity: .21;
+}
+
+kbd {
+  background-color: #EEE;
+  border: 1px solid #DDD;
+  padding: 1px 3px;
+  display: inline-block;
+  margin: 1px;
+  border-radius: 3px;
 }
