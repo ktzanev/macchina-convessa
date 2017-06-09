@@ -35,6 +35,9 @@ body {
 .intpoint.origin {
   fill : rgb(128,0,0);
 }
+.intpoint.inside {
+  fill : rgb(255,0,255);
+}
 .intpoint {
   fill : gray;
 }

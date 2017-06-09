@@ -249,8 +249,31 @@ var vm = new Vue({
       svg.addEventListener(events.move, moveFn);
       svg.addEventListener(events.stop, stopFn);
     }, // end startMove
+    isInside : function isInside(m,n) {
+      for(var i=0; i < this.dLines.length; i++) {
+        // console.log(this.dLines[i]);
+        if ( InsideSegmentStar(m,n,this.dLines[i].x1,this.dLines[i].y1,this.dLines[i].x2,this.dLines[i].y2) ) {
+          console.log(m,n);
+          return true;
+        }
+      }
+      return false;
+    }
   } // end methods
 });
+
+function InsideSegmentStar(m,n,x1,y1,x2,y2) {
+  var delta = x1*y2-x2*y1;
+  if (!delta) return false;
+
+  var l1 = (y2*m-x2*n)/delta;
+  if (l1 <= 0) return false;
+
+  var l2 = (x1*n-y1*m)/delta;
+  if (l2 <= 0) return false;
+
+  return (l1+l2 < 1);
+}
 
 function getMousePos(mouseEvent, point) {
   point.x = mouseEvent.clientX;

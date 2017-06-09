@@ -12,7 +12,9 @@
     <svg class="graph" v-bind="graphPos">
       <g v-for="n in 21">
         <g v-for="m in 21">
-          <circle  v-bind:cx="n-11" v-bind:cy="m-11" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==11 && m==11)}" />
+          <circle  v-bind:cx="m-11" v-bind:cy="n-11" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==11 && m==11)}">
+            <animate v-if="isInside(m-11,n-11)" attributeType="XML" repeatCount="indefinite" attributeName="fill" values="#f00;#f00;#fff" dur="0.7s" />
+          </circle>
         </g>
       </g>
       <!-- edges -->
