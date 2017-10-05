@@ -4,16 +4,18 @@ var vm = new Vue({
     aPolygon : [],  // the polygon like [ {cx : 0, cy :0, selected : false}, ...]
     dPolygon : [], // and it's dual
     aIsMaster : true, // decide the master / slave relation between A and D
-    graphSize : 7,
+    graphSize : 11,
     vertexSize : .05,
     edgeWidth : .035,
     integerPointSize : .049,
     precision : 4,
     examples : [
-      { title: "Convex Asymetric Min", data: "(0,1)(1,0)(-1,-1)" },
-      { title: "Convex Symetric Min = B¹", data: "(1,0)(0,1)(-1,0)(0,-1)" },
-      { title: "Star Symetric Min 1", data: "(0.5,0)(0.5,0.5)(0,0.5)(-1,1)(-0.5,0)(-0.5,-0.5)(0,-0.5)(1,-1)" },
-      { title: "Star Symetric Min 2", data: "(0.5,0)(1,0.5)(0,0.5)(-0.5,1)(-0.5,0)(-1,-0.5)(0,-0.5)(0.5,-1)" }
+      { title: "Convex Asymetric 3/2", data: "(0,1)(1,0)(-1,-1)" },
+      { title: "Convex Symetric 2 = B¹", data: "(1,0)(0,1)(-1,0)(0,-1)" },
+      { title: "Star Symetric 3/2 A", data: "(0.5,0)(0.5,0.5)(0,0.5)(-1,1)(-0.5,0)(-0.5,-0.5)(0,-0.5)(1,-1)" },
+      { title: "Star Symetric 3/2 B", data: "(0.5,0)(1,0.5)(0,0.5)(-0.5,1)(-0.5,0)(-1,-0.5)(0,-0.5)(0.5,-1)" },
+      { title: "Star Symetric 4/3 A", data: "(1,0.3333333333333333)(0.3333333333333333,0.3333333333333333)(-0.3333333333333333,1)(-0.3333333333333333,0.3333333333333333)(-1,-0.3333333333333333)(-0.3333333333333333,-0.3333333333333333)(0.3333333333333333,-1)(0.3333333333333333,-0.3333333333333333)" },
+      { title: "Star Symetric 4/3 B", data: "(-0.3333333333333333,0)(-1,-0.6666666666666666)(-0.3333333333333333,-0.6666666666666666)(-0.3333333333333333,-1.3333333333333333)(0.3333333333333333,0)(1,0.6666666666666666)(0.3333333333333333,0.6666666666666666)(0.3333333333333333,1.3333333333333333)" }
     ],
     useCtrl : navigator.userAgent.indexOf('Mac OS X') == -1
   },// end data
