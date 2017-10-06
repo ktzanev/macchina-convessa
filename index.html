@@ -9,11 +9,11 @@
 </head>
 <body>
   <div id="app">
-    <svg class="graph" v-bind="graphPos">
-      <g v-for="n in 21">
-        <g v-for="m in 21">
-          <circle  v-bind:cx="m-11" v-bind:cy="n-11" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==11 && m==11)}">
-            <animate v-if="isInside(m-11,n-11)" attributeType="XML" repeatCount="indefinite" attributeName="fill" values="#f00;#f00;#fff" dur="0.7s" />
+    <svg class="graph" v-bind="graphPos" transform="scale(1,-1)">
+      <g v-for="n in netSize">
+        <g v-for="m in netSize">
+          <circle  v-bind:cx="m-netOrigin" v-bind:cy="n-netOrigin" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==netOrigin && m==netOrigin)}">
+            <animate v-if="isInside(m-netOrigin,n-netOrigin)" attributeType="XML" repeatCount="indefinite" attributeName="fill" values="#f00;#f00;#fff" dur="0.7s" />
           </circle>
         </g>
       </g>
@@ -25,27 +25,46 @@
       <circle v-for="p in aPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
       <circle v-for="p in dPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
     </svg>
+    <!-- ============================================ -->
     <div class="settings" v-cloak>
-      <select v-model="aPolygonString" class="field">
-        <option v-for="e in examples" v-bind:value="e.data">
+      Example:
+      <select v-model="selectedExample" @change="setExample">
+        <option v-for="e in examples" v-bind:value="e">
           {{ e.title }}
         </option>
       </select><br>
-      <input type="text" v-model="aPolygonString" class="string field"><br>
       <hr>
-      <span class="volumeA">Volume A : {{volumeAPolygon.toFixed(3)}}</span><br>
-      <span class="volumeD">Volume D : {{volumeDPolygon.toFixed(3)}}</span><br>
+      <input type="text" v-model="aPolygonString" class="string field">
+      <span class="volumeA">Volume A: {{volumeAPolygon.toFixed(3)}}</span>
+      A precision: <input type="range" min="1" max="10" step="1" v-model="aPrecision">
+      <button @click="roundPolygon(true)" class="roundA">Round A up to 1/{{aPrecision}}</button><br>
+      Transform:
+      <button @click="skew(true,1)" class="roundA">←</button>
+      <button @click="skew(true,2)" class="roundA">→</button>
+      <button @click="skew(true,3)" class="roundA">↑</button>
+      <button @click="skew(true,4)" class="roundA">↓</button>
 
-      Precision : <input type="range" min="1" max="10" step="1" v-model="precision">
-      <button @click="roundPolygon(true)" class="roundA">Round A up to 1/{{precision}}</button>
-      <button @click="roundPolygon(false)" class="roundD">Round D up to 1/{{precision}}</button><br>
-      Vertex size : <input type="range" min="0" max="0.5" step="0.01" v-model="vertexSize"><br>
-      Edge width : <input type="range" min="0" max="0.5" step="0.01" v-model="edgeWidth"><br>
-      Integer points size : <input type="range" min="0" max="0.5" step="0.01" v-model="integerPointSize"><br><br>
-      Help :
+      <hr>
+      <input type="text" v-model="dPolygonString" class="string field">
+      <span class="volumeD">Volume D: {{volumeDPolygon.toFixed(3)}}</span>
+      D precision: <input type="range" min="1" max="10" step="1" v-model="dPrecision">
+      <button @click="roundPolygon(false)" class="roundD">Round D up to 1/{{dPrecision}}</button><br>
+      Transform:
+      <button @click="skew(false,1)" class="roundD">←</button>
+      <button @click="skew(false,2)" class="roundD">→</button>
+      <button @click="skew(false,3)" class="roundD">↑</button>
+      <button @click="skew(false,4)" class="roundD">↓</button>
+
+      <hr>
+      Zoom: <input type="range" v-model="graphSize" min="5" max="21" step="2"><br>
+      Vertex size: <input type="range" min="0" max="0.5" step="0.01" v-model="vertexSize"><br>
+      Edge width: <input type="range" min="0" max="0.5" step="0.01" v-model="edgeWidth"><br>
+      Integer points size: <input type="range" min="0" max="0.5" step="0.01" v-model="integerPointSize"><br>
+      <hr><br>
+      Help:
       <ul>
         <li><kbd>Shift+Click</kbd> on edge => add point;</li>
-        <li><kbd>{{ useCtrl ? "Ctrl" : "Cmd"}}+Click</kbd> on vertex => select/deselect it.</li>
+        <li><kbd>{{ useCtrl ? "Ctrl": "Cmd"}}+Click</kbd> on vertex => select/deselect it.</li>
       </ul>
       <div class="github-logo">
         <a href="https://github.com/ktzanev/macchina-convessa">

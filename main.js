@@ -4,27 +4,33 @@ var vm = new Vue({
     aPolygon : [],  // the polygon like [ {cx : 0, cy :0, selected : false}, ...]
     dPolygon : [], // and it's dual
     aIsMaster : true, // decide the master / slave relation between A and D
-    graphSize : 11,
+    graphSize : 7,
     vertexSize : .05,
     edgeWidth : .035,
     integerPointSize : .049,
-    precision : 4,
+    aPrecision : 4,
+    dPrecision : 4,
     examples : [
-      { title: "Convex Asymetric 3/2", data: "(0,1)(1,0)(-1,-1)" },
-      { title: "Convex Symetric 2 = B¹", data: "(1,0)(0,1)(-1,0)(0,-1)" },
-      { title: "Star Symetric 3/2 A", data: "(0.5,0)(0.5,0.5)(0,0.5)(-1,1)(-0.5,0)(-0.5,-0.5)(0,-0.5)(1,-1)" },
-      { title: "Star Symetric 3/2 B", data: "(0.5,0)(1,0.5)(0,0.5)(-0.5,1)(-0.5,0)(-1,-0.5)(0,-0.5)(0.5,-1)" },
-      { title: "Star Symetric 4/3 A", data: "(1,0.3333333333333333)(0.3333333333333333,0.3333333333333333)(-0.3333333333333333,1)(-0.3333333333333333,0.3333333333333333)(-1,-0.3333333333333333)(-0.3333333333333333,-0.3333333333333333)(0.3333333333333333,-1)(0.3333333333333333,-0.3333333333333333)" },
-      { title: "Star Symetric 4/3 B", data: "(-0.3333333333333333,0)(-1,-0.6666666666666666)(-0.3333333333333333,-0.6666666666666666)(-0.3333333333333333,-1.3333333333333333)(0.3333333333333333,0)(1,0.6666666666666666)(0.3333333333333333,0.6666666666666666)(0.3333333333333333,1.3333333333333333)" }
+      { title: "Convex Asymetric 3/2",   aim: true,  data: "(0,1)(1,0)(-1,-1)" },
+      { title: "Convex Symetric 2 = B¹", aim: true,  data: "(1,0)(0,1)(-1,0)(0,-1)" },
+      { title: "Star Symetric 3/2 A",    aim: true,  data: "(0.5,0)(0.5,0.5)(0,0.5)(-1,1)(-0.5,0)(-0.5,-0.5)(0,-0.5)(1,-1)" },
+      { title: "Star Symetric 3/2 B",    aim: true,  data: "(0.5,0)(1,0.5)(0,0.5)(-0.5,1)(-0.5,0)(-1,-0.5)(0,-0.5)(0.5,-1)" },
+      { title: "Star Symetric 4/3 A",   aim: false, data: "(0,3)(1.5,1.5)(-3,0)(-1.5,1.5)(0,-3)(-1.5,-1.5)(3,0)(1.5,-1.5)" },
+      { title: "Star Symetric 4/3 B",    aim: false, data: "(-3,1.5)(-3,3)(0,-1.5)(-3,0)(3,-1.5)(3,-3)(0,1.5)(3,0)" }
     ],
+    selectedExample : {},
     useCtrl : navigator.userAgent.indexOf('Mac OS X') == -1
   },// end data
   // ------------------
   watch: {
     aPolygon : {
       handler : function (newA) {
-        if (this.aIsMaster)
-          this.dPolygon = this.dualPolygon(this.aLines);
+        var temp;
+        if (this.aIsMaster) {
+          temp = this.dualPolygon(this.aLines);
+          temp.unshift(temp.pop()); // rotate
+          this.dPolygon = temp;
+        }
       },
       deep : true
     },
@@ -43,12 +49,6 @@ var vm = new Vue({
     volumeDPolygon : function () {
       return this.volumePolygon(this.dPolygon);
     },
-    roundedAPolygon : function () {
-      return this.roundedPolygon(this.aPolygon);
-    },
-    roundedDPolygon : function () {
-      return this.roundedPolygon(this.dPolygon);
-    },
     aLines: function () {
       return this.edgesOfPolygon(this.aPolygon);
     }, // end aLines()
@@ -66,14 +66,23 @@ var vm = new Vue({
         width: size
       };
     },
+    netSize: function netSize() {
+      return 2*Math.floor(this.graphSize/2) + 3;
+    },
+    netOrigin: function netSize() {
+      return Math.floor(this.graphSize/2) + 1;
+    },
     aPolygonString: {
       // getter
       get: function () {
         var str = this.aPolygon.map(function(v){return "("+v.cx+","+v.cy+")";}).join('');
-        try {
-          localStorage.setItem("polygone", str);
-        } catch(e) {
-          console.log('Can\'t save to Local Storage :(');
+        if (this.aIsMaster) {
+          try {
+            localStorage.setItem("dPolygoneStr", str);
+            localStorage.setItem("aIsMaster", this.aIsMaster);
+          } catch(e) {
+            console.log('Can\'t save A to Local Storage :(');
+          }
         }
         return str;
       },
@@ -82,17 +91,49 @@ var vm = new Vue({
         this.aIsMaster = true;
         this.aPolygon = str.trim().replace(/^[( ]+|[ )]+$/g,"").split(/[^-0-9.,]+/).map(function(v){w = v.trim().split(/[^-0-9.]+/); return {cx:parseFloat(w[0]),cy:parseFloat(w[1]),selected:false};});
         try {
-          localStorage.setItem("polygone", str);
+          localStorage.setItem("aPolygoneStr", str);
+          localStorage.setItem("aIsMaster", this.aIsMaster);
         } catch(e) {
-          console.log('Can\'t save to Local Storage :(');
+          console.log('Can\'t save A to Local Storage :(');
+        }
+      }
+    },
+    dPolygonString: {
+      // getter
+      get: function () {
+        var str = this.dPolygon.map(function(v){return "("+v.cx+","+v.cy+")";}).join('');
+        if (! this.aIsMaster) {
+          try {
+            localStorage.setItem("dPolygoneStr", str);
+            localStorage.setItem("aIsMaster", this.aIsMaster);
+          } catch(e) {
+            console.log('Can\'t save D to Local Storage :(');
+          }
+        }
+        return str;
+      },
+      // setter
+      set: function (str) {
+        this.aIsMaster = false;
+        this.dPolygon = str.trim().replace(/^[( ]+|[ )]+$/g,"").split(/[^-0-9.,]+/).map(function(v){w = v.trim().split(/[^-0-9.]+/); return {cx:parseFloat(w[0]),cy:parseFloat(w[1]),selected:false};});
+        try {
+          localStorage.setItem("dPolygoneStr", str);
+          localStorage.setItem("aIsMaster", this.aIsMaster);
+        } catch(e) {
+          console.log('Can\'t save D to Local Storage :(');
         }
       }
     }
   }, // end computed
   created: function () {
     try {
-      this.aPolygonString = localStorage.getItem("polygone", "(0,1)(1,0)(-1,-1)(-2,-1)");
+      this.aIsMaster = JSON.parse(localStorage.getItem("aIsMaster", "true"));
+      if (this.aIsMaster)
+        this.aPolygonString = localStorage.getItem("aPolygoneStr", "(0,1)(1,0)(-1,-1)(-2,-1)");
+      else
+        this.dPolygonString = localStorage.getItem("dPolygoneStr", "(0,1)(1,0)(-1,-1)(-2,-1)");
     } catch(e) {
+      this.aIsMaster = true;
       this.aPolygonString = "(0,1)(1,0)(-1,-1)(-2,-1)";
     }
   }, // end created
@@ -149,15 +190,39 @@ var vm = new Vue({
     }, // end trianglesOfPolygon
     roundPolygon : function (useA){
       var xPolygon = useA ? this.aPolygon : this.dPolygon;
+      var precision = useA ? this.aPrecision : this.dPrecision;
       var n = xPolygon.length; // number of points
 
       this.aIsMaster = useA;
 
       for (var i = 0; i < n; i++) {
-        xPolygon[i].cx = Math.round(xPolygon[i].cx*this.precision)/this.precision;
-        xPolygon[i].cy = Math.round(xPolygon[i].cy*this.precision)/this.precision;
+        xPolygon[i].cx = Math.round(xPolygon[i].cx*precision)/precision;
+        xPolygon[i].cy = Math.round(xPolygon[i].cy*precision)/precision;
       }
-    }, // end roundedPolygon
+    }, // end roundPolygon
+    skew : function (useA, direction){
+      var xPolygon = useA ? this.aPolygon : this.dPolygon;
+      var n = xPolygon.length; // number of points
+
+      this.aIsMaster = useA;
+
+      for (var i = 0; i < n; i++) {
+        switch(direction) {
+          case 1:
+            xPolygon[i].cx += -xPolygon[i].cy;
+            break;
+          case 2:
+            xPolygon[i].cx += xPolygon[i].cy;
+            break;
+          case 3:
+            xPolygon[i].cy += xPolygon[i].cx;
+            break;
+          case 4:
+            xPolygon[i].cy += -xPolygon[i].cx;
+            break;
+        }
+      }
+    }, // end skew
     volumePolygon : function (poly){
       var n = poly.length; // number of points
       var v = 0;
@@ -255,11 +320,23 @@ var vm = new Vue({
       for(var i=0; i < this.dLines.length; i++) {
         // console.log(this.dLines[i]);
         if ( InsideSegmentStar(m,n,this.dLines[i].x1,this.dLines[i].y1,this.dLines[i].x2,this.dLines[i].y2) ) {
-          console.log(m,n);
           return true;
         }
       }
       return false;
+    },
+    setExample: function setExample() {
+      if (!this.selectedExample)
+        return;
+      this.aIsMaster = this.selectedExample.aim;
+      if (this.aIsMaster)
+        this.aPolygonString = this.selectedExample.data;
+      else
+        this.dPolygonString = this.selectedExample.data;
+      // reset
+      Vue.nextTick(function () {
+        vm.selectedExample = {};
+      });
     }
   } // end methods
 });
