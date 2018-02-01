@@ -11,11 +11,9 @@
   <div id="app">
     <svg class="graph" v-bind="graphPos" transform="scale(1,-1)">
       <g v-for="n in netSize">
-        <g v-for="m in netSize">
-          <circle  v-bind:cx="m-netOrigin" v-bind:cy="n-netOrigin" v-bind:r="integerPointSize" v-bind:class="{'intpoint':true, 'origin': (n==netOrigin && m==netOrigin)}">
+          <circle v-for="m in netSize" v-bind:cx="m-netOrigin" v-bind:cy="n-netOrigin" v-bind:r="integerPointSize" class="intpoint">
             <animate v-if="isInside(m-netOrigin,n-netOrigin)" attributeType="XML" repeatCount="indefinite" attributeName="fill" values="#f00;#f00;#fff" dur="0.7s" />
           </circle>
-        </g>
       </g>
       <!-- edges -->
       <polygon v-for="(i,l) in dTriangles" v-bind:points="l" class="dualTriangles"/>
@@ -25,8 +23,9 @@
       <circle v-for="p in aPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
       <circle v-for="p in dPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
       <!-- centroids -->
-      <circle  v-bind="centroidAPolygon" v-bind:r="vertexSize" class="acentroid" v-bind:stroke-width="vertexSize/3"></circle>
-      <circle  v-bind="centroidDPolygon" v-bind:r="vertexSize" class="dcentroid" v-bind:stroke-width="vertexSize/3"></circle>
+      <circle v-bind="centroidDPolygon" v-bind:r="vertexSize" v-bind:stroke-width="vertexSize/3" class="dcentroid"></circle>
+      <circle v-bind="centroidAPolygon" v-bind:r="vertexSize" v-bind:stroke-width="vertexSize/3" class="acentroid"></circle>
+      <circle cx="0" cy="0" v-bind:r="vertexSize/2" v-bind:stroke-width="vertexSize/3" class="origin"></circle>
     </svg>
     <!-- ============================================ -->
     <div class="settings" v-cloak>

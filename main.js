@@ -275,7 +275,8 @@ var vm = new Vue({
       }, 100);
     },
     stopPingPong: function (){
-      window.clearInterval(vm.intervalID);
+      if(vm.intervalID)
+        window.clearInterval(vm.intervalID);
       vm.intervalID = null;
     },
     volumePolygon : function (poly){
@@ -370,7 +371,6 @@ var vm = new Vue({
       getPos(evt, point);
       oldPt = point.matrixTransform(transform);
 
-
       var updateFn = function updateFn() {
         if (moving) requestAnimationFrame(updateFn);
 
@@ -407,6 +407,7 @@ var vm = new Vue({
 
       svg.addEventListener(events.move, moveFn);
       svg.addEventListener(events.stop, stopFn);
+      this.stopPingPong()
     }, // end startMove
     isInside : function isInside(m,n) {
       for(var i=0; i < this.dLines.length; i++) {
