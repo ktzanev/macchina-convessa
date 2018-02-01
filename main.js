@@ -352,7 +352,13 @@ var vm = new Vue({
       var transform = svg.getScreenCTM().inverse();
       var xPolygon = useA ? this.aPolygon : this.dPolygon;
       var wasSelected = vertex.selected;
-      vertex.selected = true;
+      if( evt.altKey ) {
+          var xPolygon = useA ? vm.aPolygon : vm.dPolygon;
+          xPolygon.forEach(function(v) {v.selected = true});
+        }
+      else {
+        vertex.selected = true;
+      }
 
       this.aIsMaster = useA;
 
@@ -381,9 +387,11 @@ var vm = new Vue({
       };
       var stopFn = function stopFn(evt) {
         moving = false;
-        if( vm.useCtrl ? event.ctrlKey : evt.metaKey )
+        if( vm.useCtrl ? evt.ctrlKey : evt.metaKey )
         {
           vertex.selected = !wasSelected;
+        } else if (evt.altKey) {
+          vertex.selected = true;
         } else {
           vertex.selected = wasSelected;
         };

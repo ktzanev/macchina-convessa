@@ -50,7 +50,7 @@
 
       <hr>
       <button @click="startPingPong()" v-show="intervalID === null">Start Ping-Pong</button>
-      <button @click="stopPingPong()" v-show="intervalID !== null">Stop Ping-Pong</button>
+      <button @click="stopPingPong()" v-show="intervalID !== null" class="stoppingpong">Stop Ping-Pong</button>
       <div class="volumprod">VA*VD={{(volumeAPolygon*volumeDPolygon).toFixed(4)}}</div>
       <div class="hessian">-12 x ({{volumeDPolygon.toFixed(4)}})
         <table class="matrixA">
@@ -142,7 +142,8 @@
       Help:
       <ul>
         <li><kbd>Shift+Click</kbd> on edge => add point;</li>
-        <li><kbd>{{ useCtrl ? "Ctrl": "Cmd"}}+Click</kbd> on vertex => select/deselect it.</li>
+        <li><kbd>{{ useCtrl ? "Ctrl": "Cmd"}}+Click</kbd> on vertex => select/deselect it;</li>
+        <li><kbd>Alt+Click</kbd> on vertex => select/deselect all.</li>
       </ul>
       <div class="github-logo">
         <a href="https://github.com/ktzanev/macchina-convessa">

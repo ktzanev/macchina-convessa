@@ -94,6 +94,9 @@ body {
 .volumprod, .matrixAD {
   background-color: #FAF;
 }
+.stoppingpong {
+  background-color: lightgreen;
+}
 .hessian {
   display: inline-block;
   padding: .35em;
