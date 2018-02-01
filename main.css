@@ -93,6 +93,18 @@ body {
 .hessian table td {
   border: 1px solid gray;
 }
+/* Controls */
+.controls {
+  display: inline-block;
+  vertical-align: top;
+  box-shadow: 1px 1px 3px gray;
+  padding: 7px;
+  font-size: .91em;
+}
+.controls h2 {
+  margin-top: 0px;
+  text-align: center;
+}
 .github-logo {
   text-align: right;
   padding: 1em;
