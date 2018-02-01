@@ -20,6 +20,9 @@ body {
 .edge {
   stroke:rgb(255,0,0);
 }
+.acentroid{
+  stroke:rgb(255,0,0);
+}
 .dualPointer {
   fill: #83b942;
 }
@@ -28,6 +31,9 @@ body {
 }
 .dualTriangles {
   fill: rgba(0,0,255,.21);
+}
+.dcentroid{
+  stroke:rgb(0,0,255);
 }
 .edge:hover, .dualEdge:hover {
   cursor: copy;
@@ -73,12 +79,33 @@ body {
   margin: .35em;
   border-radius: .35em;
 }
-
-.roundA {
+.roundA,.matrixA {
   background-color: #FAA;
 }
-.roundD {
+.roundD,.matrixD {
   background-color: #AAF;
+}
+.volumprod {
+  display: inline-block;
+  padding: .35em;
+  margin: .35em;
+  border-radius: .35em;
+}
+.volumprod, .matrixAD {
+  background-color: #FAF;
+}
+.hessian {
+  display: inline-block;
+  padding: .35em;
+  margin: .35em;
+}
+.hessian table {
+  display: inline-block;
+  border-collapse: collapse;
+  margin-bottom: -1em;
+}
+.hessian table td {
+  border: 1px solid gray;
 }
 .github-logo {
   text-align: right;

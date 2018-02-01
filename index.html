@@ -24,6 +24,9 @@
       <!-- vertices -->
       <circle v-for="p in aPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,true)" @touchstart.prevent="startMove($event,p,true)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
       <circle v-for="p in dPolygon" v-bind="p" @mousedown.prevent="startMove($event,p,false)" @touchstart.prevent="startMove($event,p,false)" v-bind:r="vertexSize" class="pointer" v-bind:class="{ selected: p.selected}" />
+      <!-- centroids -->
+      <circle  v-bind="centroidAPolygon" v-bind:r="vertexSize" class="acentroid" v-bind:stroke-width="vertexSize/3"></circle>
+      <circle  v-bind="centroidDPolygon" v-bind:r="vertexSize" class="dcentroid" v-bind:stroke-width="vertexSize/3"></circle>
     </svg>
     <!-- ============================================ -->
     <div class="settings" v-cloak>
@@ -43,7 +46,81 @@
       <button @click="skew(true,2)" class="roundA">→</button>
       <button @click="skew(true,3)" class="roundA">↑</button>
       <button @click="skew(true,4)" class="roundA">↓</button>
+      <button @click="center(true)" class="roundA">g(A)→0</button>
 
+      <hr>
+      <button @click="startPingPong()" v-show="intervalID === null">Start Ping-Pong</button>
+      <button @click="stopPingPong()" v-show="intervalID !== null">Stop Ping-Pong</button>
+      <div class="volumprod">VA*VD={{(volumeAPolygon*volumeDPolygon).toFixed(4)}}</div>
+      <div class="hessian">-12 x ({{volumeDPolygon.toFixed(4)}})
+        <table class="matrixA">
+          <tr>
+            <td>{{z2APolygon.x2.toFixed(4)}}</td>
+            <td>{{z2APolygon.xy.toFixed(4)}}</td>
+          </tr>
+          <tr>
+            <td>{{z2APolygon.xy.toFixed(4)}}</td>
+            <td>{{z2APolygon.y2.toFixed(4)}}</td>
+          </tr>
+        </table>
+        (Id - 16/{{(volumeAPolygon*volumeDPolygon).toFixed(4)}}
+        <table class="matrixD">
+          <tr>
+            <td>{{z2DPolygon.x2.toFixed(4)}}</td>
+            <td>{{z2DPolygon.xy.toFixed(4)}}</td>
+          </tr>
+          <tr>
+            <td>{{z2DPolygon.xy.toFixed(4)}}</td>
+            <td>{{z2DPolygon.y2.toFixed(4)}}</td>
+          </tr>
+        </table>
+        <table class="matrixA">
+          <tr>
+            <td>{{z2APolygon.x2.toFixed(4)}}</td>
+            <td>{{z2APolygon.xy.toFixed(4)}}</td>
+          </tr>
+          <tr>
+            <td>{{z2APolygon.xy.toFixed(4)}}</td>
+            <td>{{z2APolygon.y2.toFixed(4)}}</td>
+          </tr>
+        </table>
+        )
+      </div>
+      <div class="hessian">({{(-12*volumeDPolygon).toFixed(4)}})
+        <table class="matrixA">
+          <tr>
+            <td>{{z2APolygon.x2.toFixed(4)}}</td>
+            <td>{{z2APolygon.xy.toFixed(4)}}</td>
+          </tr>
+          <tr>
+            <td>{{z2APolygon.xy.toFixed(4)}}</td>
+            <td>{{z2APolygon.y2.toFixed(4)}}</td>
+          </tr>
+        </table>
+        <table class="matrixAD">
+          <tr>
+            <td>{{h2.x11.toFixed(4)}}</td>
+            <td>{{h2.x12.toFixed(4)}}</td>
+          </tr>
+          <tr>
+            <td>{{h2.x21.toFixed(4)}}</td>
+            <td>{{h2.x22.toFixed(4)}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="hessian">det(
+        <table class="matrixAD">
+          <tr>
+            <td>{{hessian.x11.toFixed(4)}}</td>
+            <td>{{hessian.x12.toFixed(4)}}</td>
+          </tr>
+          <tr>
+            <td>{{hessian.x21.toFixed(4)}}</td>
+            <td>{{hessian.x22.toFixed(4)}}</td>
+          </tr>
+        </table>
+        ) = {{(hessian.x11*hessian.x22 - hessian.x12*hessian.x21).toFixed(4)}}
+      </div>
       <hr>
       <input type="text" v-model="dPolygonString" class="string field">
       <span class="volumeD">Volume D: {{volumeDPolygon.toFixed(3)}}</span>
@@ -54,6 +131,7 @@
       <button @click="skew(false,2)" class="roundD">→</button>
       <button @click="skew(false,3)" class="roundD">↑</button>
       <button @click="skew(false,4)" class="roundD">↓</button>
+      <button @click="center(false)" class="roundD">g(D)→0</button>
 
       <hr>
       Zoom: <input type="range" v-model="graphSize" min="5" max="21" step="2"><br>

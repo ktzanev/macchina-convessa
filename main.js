@@ -19,6 +19,7 @@ var vm = new Vue({
       { title: "Star Symetric 4/3 B",    aim: false, data: "(-3,1.5)(-3,3)(0,-1.5)(-3,0)(3,-1.5)(3,-3)(0,1.5)(3,0)" }
     ],
     selectedExample : {},
+    intervalID: null, // setInterval ID
     useCtrl : navigator.userAgent.indexOf('Mac OS X') == -1
   },// end data
   // ------------------
@@ -48,6 +49,12 @@ var vm = new Vue({
     },
     volumeDPolygon : function () {
       return this.volumePolygon(this.dPolygon);
+    },
+    centroidAPolygon : function () {
+      return this.centroidPolygon(this.aPolygon);
+    },
+    centroidDPolygon : function () {
+      return this.centroidPolygon(this.dPolygon);
     },
     aLines: function () {
       return this.edgesOfPolygon(this.aPolygon);
@@ -123,6 +130,28 @@ var vm = new Vue({
           console.log('Can\'t save D to Local Storage :(');
         }
       }
+    },
+    // second Minkovski for A
+    z2APolygon: function(){
+      return this.z2Polygon(this.aPolygon);
+    },
+    // second Minkovski for D
+    z2DPolygon: function(){
+      return this.z2Polygon(this.dPolygon);
+    },
+    // second matrix factor of the Hessian
+    h2: function(){
+      var z2DA = z2prod(this.z2DPolygon,this.z2APolygon);
+      var vAD = this.volumeAPolygon*this.volumeDPolygon;
+      return {
+        x11: 1 - 16*z2DA.x11/vAD,
+        x12: 0 - 16*z2DA.x12/vAD,
+        x21: 0 - 16*z2DA.x21/vAD,
+        x22: 1 - 16*z2DA.x22/vAD,
+      };
+    },
+    hessian: function(){
+      return kxz2xMatrix(-12*this.volumeDPolygon,this.z2APolygon,this.h2);
     }
   }, // end computed
   created: function () {
@@ -223,16 +252,68 @@ var vm = new Vue({
         }
       }
     }, // end skew
+    center: function (useA) {
+      var xPolygon = useA ? this.aPolygon : this.dPolygon;
+      var centroidXPolygon = useA ? this.centroidAPolygon : this.centroidDPolygon;
+      var n = xPolygon.length; // number of points
+
+      this.aIsMaster = useA;
+
+      for (var i = 0; i < n; i++) {
+        xPolygon[i].cx += -centroidXPolygon.cx;
+        xPolygon[i].cy += -centroidXPolygon.cy;
+      }
+    }, // end center
+    startPingPong: function (){
+      var ad = true;
+      vm.intervalID = setInterval(function () {
+        vm.center(ad);
+        ad = !ad;
+      }, 100);
+    },
+    stopPingPong: function (){
+      window.clearInterval(vm.intervalID);
+      vm.intervalID = null;
+    },
     volumePolygon : function (poly){
       var n = poly.length; // number of points
       var v = 0;
 
       for (var i = 0, j = 1; i < n; j = (++i+1) % n) {
-        v += poly[i].cx * poly[j].cy - poly[j].cx * poly[i].cy;
+        v += determinant(poly[i],poly[j]);
       }
 
       return Math.abs(v/2);
-    }, // end volumeOfPolygon()
+    }, // end volumeOfPolygon
+    centroidPolygon : function (poly){
+      var n = poly.length; // number of points
+      var d; // temporary determinant
+      var a = 0; // the total area
+      var x = 0, y = 0; // (x,y) will be the centroid
+
+      for (var i = 0, j = 1; i < n; j = (++i+1) % n) {
+        d = Math.abs(determinant(poly[i],poly[j]));
+        a += d;
+        x += (poly[i].cx+poly[j].cx)*d;
+        y += (poly[i].cy+poly[j].cy)*d;
+      }
+
+      return {cx : x/3/a, cy : y/3/a};
+    }, // end centroidPolygon
+    z2Polygon : function (poly){
+      var n = poly.length; // number of points
+      var d; // temporary determinant
+      var z2x2 = 0, z2y2 = 0, z2xy=0; // the ZxZ will be [x2 xy; xy y2]
+
+      for (var i = 0, j = 1; i < n; j = (++i+1) % n) {
+        d = Math.abs(determinant(poly[i],poly[j]));
+        z2x2 += d*x2(poly[i],poly[j]);
+        z2y2 += d*y2(poly[i],poly[j]);
+        z2xy += d*xy(poly[i],poly[j]);
+      }
+
+      return {x2 : z2x2/12, y2 : z2y2/12, xy : z2xy/12};
+    }, // end hessianPolygon
     // ------------------
     addPoint: function addPoint(evt, i, useA) {
       if(!evt.shiftKey)
@@ -341,6 +422,7 @@ var vm = new Vue({
   } // end methods
 });
 
+// check if the point (m,n) is inside the traingle {(0,0) (x1,y1) (x2,y2)}
 function InsideSegmentStar(m,n,x1,y1,x2,y2) {
   var delta = x1*y2-x2*y1;
   if (!delta) return false;
@@ -352,6 +434,37 @@ function InsideSegmentStar(m,n,x1,y1,x2,y2) {
   if (l2 <= 0) return false;
 
   return (l1+l2 < 1);
+}
+
+// calculate the determinant of p and q
+function determinant(p,q) {
+  return p.cx*q.cy-p.cy*q.cx;
+}
+// functions to calculate the Hessian
+function x2(p,q) {
+  return p.cx*p.cx+p.cx*q.cx+q.cx*q.cx;
+}
+function y2(p,q) {
+  return p.cy*p.cy+p.cy*q.cy+q.cy*q.cy;
+}
+function xy(p,q) {
+  return p.cx*p.cy+(p.cx*q.cy+q.cx*p.cy)/2+q.cx*q.cy;
+}
+function z2prod(a,b){
+  return {
+    x11: a.x2*b.x2+a.xy*b.xy,
+    x12: a.x2*b.xy+a.xy*b.y2,
+    x21: a.xy*b.x2+a.y2*b.xy,
+    x22: a.xy*b.xy+a.y2*b.y2
+  }
+}
+function kxz2xMatrix(k,z,m){
+  return {
+    x11: k*(z.x2*m.x11 + z.xy*m.x21),
+    x12: k*(z.x2*m.x12 + z.xy*m.x22),
+    x21: k*(z.xy*m.x11 + z.y2*m.x21),
+    x22: k*(z.xy*m.x12 + z.y2*m.x22)
+  }
 }
 
 function getMousePos(mouseEvent, point) {
