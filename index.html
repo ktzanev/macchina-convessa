@@ -38,22 +38,23 @@
       </select><br>
       <hr>
       <input type="text" v-model="aPolygonString" class="string field">
-      <span class="volumeA">Volume A: {{volumeAPolygon.toFixed(3)}}</span>
+      <span class="round colorA">Volume A: {{volumeAPolygon.toFixed(3)}}</span>
       A precision: <input type="range" min="1" max="10" step="1" v-model="aPrecision">
-      <button @click="roundPolygon(true)" class="roundA">Round A up to 1/{{aPrecision}}</button><br>
+      <button @click="roundPolygon(true)" class="round colorA">Round A up to 1/{{aPrecision}}</button><br>
       Transform:
-      <button @click="skew(true,1)" class="roundA">←</button>
-      <button @click="skew(true,2)" class="roundA">→</button>
-      <button @click="skew(true,3)" class="roundA">↑</button>
-      <button @click="skew(true,4)" class="roundA">↓</button>
-      <button @click="center(true)" class="roundA">g(A)→0</button>
+      <button @click="skew(true,1)" class="round colorA">←</button>
+      <button @click="skew(true,2)" class="round colorA">→</button>
+      <button @click="skew(true,3)" class="round colorA">↑</button>
+      <button @click="skew(true,4)" class="round colorA">↓</button>
+      <button @click="center(true)" class="round colorA">g(A)→0</button>
 
       <hr>
       <button @click="startPingPong()" v-show="intervalID === null">Start Ping-Pong</button>
       <button @click="stopPingPong()" v-show="intervalID !== null" class="stoppingpong">Stop Ping-Pong</button>
-      <div class="volumprod">VA*VD={{(volumeAPolygon*volumeDPolygon).toFixed(4)}}</div>
-      <div class="hessian">-12 x ({{volumeDPolygon.toFixed(4)}})
-        <table class="matrixA">
+      <div class="round colorAD">VA*VD={{(volumeAPolygon*volumeDPolygon).toFixed(4)}}</div>
+      <div class="hessian">
+        -12 x (<span class="colorD">{{volumeDPolygon.toFixed(4)}}</span>)
+        <table class="colorA">
           <tr>
             <td>{{z2APolygon.x2.toFixed(4)}}</td>
             <td>{{z2APolygon.xy.toFixed(4)}}</td>
@@ -63,8 +64,8 @@
             <td>{{z2APolygon.y2.toFixed(4)}}</td>
           </tr>
         </table>
-        (Id - 16/{{(volumeAPolygon*volumeDPolygon).toFixed(4)}}
-        <table class="matrixD">
+        (Id - 16/<span class="colorAD">{{(volumeAPolygon*volumeDPolygon).toFixed(4)}}</span>
+        <table class="colorD">
           <tr>
             <td>{{z2DPolygon.x2.toFixed(4)}}</td>
             <td>{{z2DPolygon.xy.toFixed(4)}}</td>
@@ -74,7 +75,7 @@
             <td>{{z2DPolygon.y2.toFixed(4)}}</td>
           </tr>
         </table>
-        <table class="matrixA">
+        <table class="colorA">
           <tr>
             <td>{{z2APolygon.x2.toFixed(4)}}</td>
             <td>{{z2APolygon.xy.toFixed(4)}}</td>
@@ -86,8 +87,8 @@
         </table>
         )
       </div>
-      <div class="hessian">({{(-12*volumeDPolygon).toFixed(4)}})
-        <table class="matrixA">
+      <div class="hessian">(<span class="colorD">{{(-12*volumeDPolygon).toFixed(4)}}</span>)
+        <table class="colorA">
           <tr>
             <td>{{z2APolygon.x2.toFixed(4)}}</td>
             <td>{{z2APolygon.xy.toFixed(4)}}</td>
@@ -97,7 +98,7 @@
             <td>{{z2APolygon.y2.toFixed(4)}}</td>
           </tr>
         </table>
-        <table class="matrixAD">
+        <table class="colorAD">
           <tr>
             <td>{{h2.x11.toFixed(4)}}</td>
             <td>{{h2.x12.toFixed(4)}}</td>
@@ -109,7 +110,7 @@
         </table>
       </div>
       <div class="hessian">det(
-        <table class="matrixAD">
+        <table class="colorAD">
           <tr>
             <td>{{hessian.x11.toFixed(4)}}</td>
             <td>{{hessian.x12.toFixed(4)}}</td>
@@ -123,15 +124,15 @@
       </div>
       <hr>
       <input type="text" v-model="dPolygonString" class="string field">
-      <span class="volumeD">Volume D: {{volumeDPolygon.toFixed(3)}}</span>
+      <span class="round colorD">Volume D: {{volumeDPolygon.toFixed(3)}}</span>
       D precision: <input type="range" min="1" max="10" step="1" v-model="dPrecision">
-      <button @click="roundPolygon(false)" class="roundD">Round D up to 1/{{dPrecision}}</button><br>
+      <button @click="roundPolygon(false)" class="round colorD">Round D up to 1/{{dPrecision}}</button><br>
       Transform:
-      <button @click="skew(false,1)" class="roundD">←</button>
-      <button @click="skew(false,2)" class="roundD">→</button>
-      <button @click="skew(false,3)" class="roundD">↑</button>
-      <button @click="skew(false,4)" class="roundD">↓</button>
-      <button @click="center(false)" class="roundD">g(D)→0</button>
+      <button @click="skew(false,1)" class="round colorD">←</button>
+      <button @click="skew(false,2)" class="round colorD">→</button>
+      <button @click="skew(false,3)" class="round colorD">↑</button>
+      <button @click="skew(false,4)" class="round colorD">↓</button>
+      <button @click="center(false)" class="round colorD">g(D)→0</button>
 
       <hr>
       Zoom: <input type="range" v-model="graphSize" min="5" max="21" step="2"><br>

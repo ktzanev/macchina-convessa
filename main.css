@@ -7,7 +7,7 @@ body {
 .graph {
   background-color: #222;
   width: 49vw;
-  height: 49vw;
+  vertical-align:top;
 }
 .pointer {
   fill: #42b983;
@@ -53,7 +53,8 @@ body {
 .settings {
   display: inline-block;
   width: 49vw;
-  height: 49vw;
+  vertical-align:top;
+  margin-top: 1em;
 }
 .settings .field {
   display: block;
@@ -61,37 +62,19 @@ body {
 .settings .string {
   width:100%;
 }
-.volumeA, .volumeD {
+.round {
   display: inline-block;
   padding: .35em;
   margin: .35em;
   border-radius: .35em;
 }
-.volumeA {
+.colorA {
   background-color: #FAA;
 }
-.volumeD {
+.colorD {
   background-color: #AAF;
 }
-.roundA, .roundD {
-  display: inline-block;
-  padding: .35em;
-  margin: .35em;
-  border-radius: .35em;
-}
-.roundA,.matrixA {
-  background-color: #FAA;
-}
-.roundD,.matrixD {
-  background-color: #AAF;
-}
-.volumprod {
-  display: inline-block;
-  padding: .35em;
-  margin: .35em;
-  border-radius: .35em;
-}
-.volumprod, .matrixAD {
+.colorAD {
   background-color: #FAF;
 }
 .stoppingpong {
